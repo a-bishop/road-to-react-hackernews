@@ -27,33 +27,49 @@ const helloWorld = "Welcome to the Road to Learn React, ";
 
 const user = 'Bud';
 
+function isSearched(searchTerm) {
+  return function (item) {
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list: list
+      list: list,
+      searchTerm: '',
     };
 
+    this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
   }
 
   onDismiss(id) {
     const updatedList = this.state.list.filter(item => item.objectID !== id);
-    // console.log(this.state.list);
-    // console.log(updatedList);
     this.setState({list: updatedList});
-    //this.forceUpdate();
   }
 
   render() {
     
     return (
       <div className="App">
-        <img src={logo} height="100" width="100" alt="react logo"/>
-        <h2>{helloWorld} {user}</h2>
-        {this.state.list.map(item =>
-            <div key={item.objectID}>
+        <h1>{helloWorld}{user}</h1>
+        <form>
+          <input type="text"
+          onChange={this.onSearchChange} 
+          />
+        </form>
+        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
+            const onHandleDismiss = () =>
+              this.onDismiss(item.objectID);
+
+            return ( <div key={item.objectID}>
                   <span>
                     <a href={item.url}>{item.title}</a>
                   </span>
@@ -62,13 +78,15 @@ class App extends Component {
                   <span>{item.points}</span>
                   <span>
                     <button 
-                      onClick={() => this.onDismiss(item.objectID)}
+                      onClick={onHandleDismiss}
                       type="button"
                     >
                       Dismiss
                     </button>
                   </span>
             </div>
+            );
+        }
         )}
       </div>
     );
