@@ -23,10 +23,6 @@ const list = [
   },
 ];
 
-const helloWorld = "Welcome to the Road to Learn React, ";
-
-const user = 'Bud';
-
 function isSearched(searchTerm) {
   return function (item) {
     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -56,20 +52,47 @@ class App extends Component {
   }
 
   render() {
-    
+    const { searchTerm, list } = this.state;
     return (
       <div className="App">
-        <h1>{helloWorld}{user}</h1>
+        <Search 
+          value={searchTerm}
+          onChange={this.onSearchChange}
+        >
+          Search the site
+        </Search>
+        <Table 
+          list={list}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+        />
+      </div>
+    );
+  }
+}
+
+  class Search extends Component {
+    render() {
+      const { value, onChange, children } = this.props;
+      return (
         <form>
-          <input type="text"
-          onChange={this.onSearchChange} 
+          {children} <input
+            type="text"
+            value={value}
+            onChange={onChange}
           />
         </form>
-        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
-            const onHandleDismiss = () =>
-              this.onDismiss(item.objectID);
+      ); 
+    }
+  }
 
-            return ( <div key={item.objectID}>
+  class Table extends Component {
+    render () {
+      const {list, pattern, onDismiss} = this.props;
+      return (
+        <div>
+          {list.filter(isSearched(pattern)).map(item =>
+             <div key={item.objectID}>
                   <span>
                     <a href={item.url}>{item.title}</a>
                   </span>
@@ -78,19 +101,17 @@ class App extends Component {
                   <span>{item.points}</span>
                   <span>
                     <button 
-                      onClick={onHandleDismiss}
+                      onClick={() => onDismiss(item.objectID)}
                       type="button"
                     >
                       Dismiss
                     </button>
                   </span>
             </div>
-            );
-        }
-        )}
-      </div>
-    );
+          )}
+        </div>
+      );
+    }
   }
-}
 
 export default App;
