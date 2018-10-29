@@ -50,13 +50,12 @@
 }
 
 .table-row {
-  Basics in React 72
   display: flex;
   line-height: 24px;
   white-space: nowrap;
   margin: 10px 0;
   padding: 10px;
-  background: #ffffff;
+  background: lightgray;
   border: 1px solid #e3e3e3;
 }
 
