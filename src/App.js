@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+const emojisearch = require('emoji-search');
 // commands: npm start, npm test, npm run build
 
 const DEFAULT_QUERY = 'redux';
@@ -9,7 +9,7 @@ const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}`;
 
 
 const largeColumn = {
@@ -24,7 +24,12 @@ const smallColumn = {
   width: '10%',
 };
 
+
+
+{/* ---------- App component --------- */}
 class App extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
 
@@ -64,16 +69,22 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopStories(searchTerm);
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   fetchSearchTopStories(searchTerm) {
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+    fetch(`${url}${searchTerm}`)
     .then(response => response.json())
-    .then(result => this.setSearchTopStories(result))
-    .catch(error => this.setState({error}));
+    .then(result => this._isMounted && this.setSearchTopStories(result))
+    .catch(error => this.is_Mounted && this.setState({error}));
   }
 
   onSearchSubmit(event) {
@@ -103,8 +114,6 @@ class App extends Component {
   }
 
   render() {
-
-    console.log(this.state);
 
     const { 
       searchTerm, 
@@ -156,6 +165,7 @@ class App extends Component {
   }
 }
 
+{/* ---------- Search component --------- */}
   const Search = ({ 
     value, 
     onChange,
@@ -173,6 +183,7 @@ class App extends Component {
       </button>
     </form>
 
+{/* ---------- Table component --------- */}
   const Table = ({
     list,
     onDismiss
@@ -181,10 +192,10 @@ class App extends Component {
       {list.map(item =>
           <div key={item.objectID} className="table-row">
               <span style={largeColumn}>
-                <a href={item.url}>{item.title}</a>
+              {emojisearch('link')[0]}<a href={item.url}>{item.title}</a>
               </span>
               <span style={midColumn}>
-                {item.author}
+              {item.author}
               </span>
               <span style={smallColumn}>
               {item.num_comments}
@@ -204,6 +215,8 @@ class App extends Component {
       )}
     </div>
 
+
+{/* ---------- Button component --------- */}
   const Button = ({onClick, className = '', children}) =>
         <button
           onClick={onClick}
@@ -213,4 +226,12 @@ class App extends Component {
           {children}
         </button>
 
+
+{/* ---------- Exports --------- */}
 export default App;
+
+export {
+  Button,
+  Search,
+  Table,
+};

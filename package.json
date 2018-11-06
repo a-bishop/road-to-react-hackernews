@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
+    "emoji-search": "^1.0.0",
+    "random-emoji": "^1.0.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-scripts": "1.1.5",
@@ -13,5 +16,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "react-test-renderer": "^16.6.0"
   }
 }
